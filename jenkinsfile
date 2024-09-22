@@ -5,13 +5,13 @@ pipeline {
         NODE_VERSION = '20.x' 
         RENDER_API_KEY = credentials('jenkins-render')
         SERVICE_ID = 'srv-crnuooij1k6c739cli9g' 
+        RENDER_URL = 'https://igallery.onrender.com'  
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    
                     git branch: 'master', url: 'https://github.com/GacheruIan/gallery.git'
                 }
             }
@@ -44,7 +44,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-            
+                sh 'npm test'
             }
         }
 
@@ -63,9 +63,18 @@ pipeline {
 
     post {
         success {
-            echo 'Success'
+            script {
+                echo 'Deployment successful!'
+                def buildId = "${env.BUILD_ID}"
+                def renderUrl = "${env.RENDER_URL}"
+                def slackMessage = "Deployment is successful... The build ID is: ${buildId}. app url here: ${renderUrl}"
+
+                // Send Slack notification
+                slackSend (color: '#36a64f', message: slackMessage)
+            }
         }
         // failure {
+        //     echo 'Build failed'
         //     mail to: 'gacheruian99@gmail.com',
         //          subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
         //          body: "Pipeline failed. Please check the Jenkins logs for details."
