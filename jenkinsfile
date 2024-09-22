@@ -71,6 +71,9 @@ pipeline {
 
                 // Send Slack notification
                 slackSend (color: '#36a64f', message: slackMessage)
+                mail to: 'gacheruian99@gmail.com',
+                     subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                     body: "Pipeline Succeeded."
             }
         }
         failure {
