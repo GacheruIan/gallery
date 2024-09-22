@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+
+    environment {
+        NODE_VERSION = '20.x' 
+        RENDER_API_KEY = credentials('jenkins-render')
+        SERVICE_ID = 'srv-crnuooij1k6c739cli9g' 
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    
+                    git branch: 'master', url: 'https://github.com/GacheruIan/gallery.git'
+                }
+            }
+        }
+
+        stage('Install Node.js') {
+            steps {
+                echo 'Installing Node.js...'
+                sh 'curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sudo bash -'
+                sh 'sudo apt-get install -y nodejs'
+                sh 'node -v'
+                sh 'npm -v'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing project dependencies using npm...'
+                sh 'npm install'
+            }
+        }
+
+        stage('Start Application') {
+            steps {
+                echo 'Starting application...'
+                sh 'npm start &'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running tests...'
+            
+            }
+        }
+
+        stage('Deploy to Render') {
+            steps {
+                echo 'Deploying the application to Render...'
+                sh '''
+                curl -X POST \
+                -H "Accept: application/json" \
+                -H "Authorization: Bearer ${RENDER_API_KEY}" \
+                https://api.render.com/v1/services/${SERVICE_ID}/deploys
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Success'
+        }
+        // failure {
+        //     mail to: 'your-email@example.com',
+        //          subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+        //          body: "Pipeline failed. Please check the Jenkins logs for details."
+        // }
+    }
+}
