@@ -34,6 +34,13 @@ pipeline {
             }
         }
 
+        stage('Install lsof') {
+            steps {
+                echo 'Installing lsof...'
+                sh 'sudo apt-get install -y lsof'
+            }
+        }
+
         stage('Stop Existing Application on Port 5000') {
             steps {
                 echo 'Checking for any process running on port 5000...'
