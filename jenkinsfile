@@ -5,7 +5,7 @@ pipeline {
         NODE_VERSION = '20.x' 
         RENDER_API_KEY = credentials('jenkins-render')
         SERVICE_ID = 'srv-crnuooij1k6c739cli9g' 
-        RENDER_URL = 'https://igallery.onrender.com'  // Hosted Render URL
+        RENDER_URL = 'https://igallery.onrender.com'  // Replace with the actual Render URL
     }
 
     stages {
@@ -34,29 +34,6 @@ pipeline {
             }
         }
 
-        stage('Install lsof') {
-            steps {
-                echo 'Installing lsof...'
-                sh 'sudo apt-get install -y lsof'
-            }
-        }
-
-        stage('Stop Existing Application on Port 5000') {
-            steps {
-                echo 'Checking for any process running on port 5000...'
-                script {
-                    def PID = sh(script: "sudo lsof -t -i:5000", returnStdout: true).trim()
-                    if (PID) {
-                        echo "Killing process $PID running on port 5000..."
-                        sh "sudo kill -9 ${PID}"
-                        echo "Process $PID has been killed."
-                    } else {
-                        echo "No process is running on port 5000."
-                    }
-                }
-            }
-        }
-
         stage('Start Application') {
             steps {
                 echo 'Starting application...'
@@ -67,7 +44,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                // sh 'npm test'
+                sh 'npm test'
             }
         }
 
@@ -96,13 +73,13 @@ pipeline {
                 slackSend (color: '#36a64f', message: slackMessage)
             }
         }
-        // failure {
-        //     script {
-        //         echo 'Build failed'
-        //         mail to: 'gacheruian99@gmail.com',
-        //              subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-        //              body: "Pipeline failed. Please check the Jenkins logs for details."
-        //     }
-        // }
+        failure {
+            script {
+                echo 'Build failed'
+                mail to: 'gacheruian99@gmail.com',
+                     subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                     body: "Pipeline failed. Please check the Jenkins logs for details."
+            }
+        }
     }
 }
