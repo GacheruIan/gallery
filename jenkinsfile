@@ -38,6 +38,9 @@ pipeline {
             steps {
                 echo 'Starting application...'
                 sh 'npm start &'
+                // Add a short delay to ensure the app is up before test
+                sleep 5
+                echo 'Application started'
             }
         }
 
