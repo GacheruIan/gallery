@@ -70,6 +70,14 @@ pipeline {
                 '''
             }
         }
+        stage('Deploy to Heroku') {
+            steps {
+                withCredentials([usernameColonPassword(credentialsId: ' a7ad64e8-289a-47a8-845a-5fa47653498f', variable: 'HEROKU_CREDENTIALS' )]){
+                sh 'git push https://${HEROKU_CREDENTIALS}@git.heroku.com/igallery-jenkins.git     master'
+    }
+  }
+} 
+
     }
 
     post {
