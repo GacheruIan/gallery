@@ -43,6 +43,12 @@ pipeline {
                 echo 'Application started'
             }
         }
+        stage('Install Dependencies') {
+            steps {
+            echo 'Installing psmisc (for fuser command)...'
+            sh 'sudo apt-get install -y psmisc'
+           }
+        }
 
         stage('Run Tests') {
             steps {
