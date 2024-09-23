@@ -44,6 +44,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
+                sh 'npm test'
               
             }
         }
@@ -61,28 +62,28 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            script {
-                echo 'Deployment successful!'
-                def buildId = "${env.BUILD_ID}"
-                def renderUrl = "${env.RENDER_URL}"
-                def slackMessage = "Deployment is successful! The build ID is: ${buildId}. App URL: ${renderUrl}"
+    // post {
+    //     success {
+    //         script {
+    //             echo 'Deployment successful!'
+    //             def buildId = "${env.BUILD_ID}"
+    //             def renderUrl = "${env.RENDER_URL}"
+    //             def slackMessage = "Deployment is successful! The build ID is: ${buildId}. App URL: ${renderUrl}"
 
-                // Send Slack notification
-                slackSend (color: '#36a64f', message: slackMessage)
-                mail to: 'gacheruian99@gmail.com',
-                     subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                     body: "Pipeline Succeeded."
-            }
-        }
-        failure {
-            script {
-                echo 'Build failed'
-                mail to: 'gacheruian99@gmail.com',
-                     subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                     body: "Pipeline failed. Please check the Jenkins logs for details."
-            }
-        }
-    }
+    //             // Send Slack notification
+    //             slackSend (color: '#36a64f', message: slackMessage)
+    //             mail to: 'gacheruian99@gmail.com',
+    //                  subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+    //                  body: "Pipeline Succeeded."
+    //         }
+    //     }
+    //     failure {
+    //         script {
+    //             echo 'Build failed'
+    //             mail to: 'gacheruian99@gmail.com',
+    //                  subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+    //                  body: "Pipeline failed. Please check the Jenkins logs for details."
+    //         }
+    //     }
+    // }
 }
