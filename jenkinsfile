@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Install psmisc') { // Rename to avoid conflict
+        stage('Install psmisc') { 
             steps {
                 echo 'Installing psmisc (for fuser command)...'
                 sh 'sudo apt-get install -y psmisc'
