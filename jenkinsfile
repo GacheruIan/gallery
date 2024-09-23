@@ -6,6 +6,7 @@ pipeline {
         RENDER_API_KEY = credentials('jenkins-render')
         SERVICE_ID = 'srv-crnuooij1k6c739cli9g' 
         RENDER_URL = 'https://igallery.onrender.com'  
+        herokuUrl = 'https://igallery-jenkins-3014fbcdc418.herokuapp.com/'
     }
 
     stages {
@@ -86,7 +87,7 @@ pipeline {
                 echo 'Deployment successful!'
                 def buildId = "${env.BUILD_ID}"
                 def renderUrl = "${env.RENDER_URL}"
-                def slackMessage = "Deployment is successful! The build ID is: ${buildId}. App URL: ${renderUrl}"
+                def slackMessage = "Deployment is successful! The build ID is: ${buildId}. App URL: ${renderUrl} Heroku URL: ${herokuUrl}"
 
                 slackSend (color: '#36a64f', message: slackMessage)
                 mail to: 'gacheruian99@gmail.com',
