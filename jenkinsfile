@@ -5,7 +5,7 @@ pipeline {
         NODE_VERSION = '20.x' 
         RENDER_API_KEY = credentials('jenkins-render')
         SERVICE_ID = 'srv-crnuooij1k6c739cli9g' 
-        RENDER_URL = 'https://igallery.onrender.com'  // Replace with the actual Render URL
+        RENDER_URL = 'https://igallery.onrender.com'  
     }
 
     stages {
@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Project Dependencies') {
             steps {
                 echo 'Installing project dependencies using npm...'
                 sh 'npm install'
@@ -38,16 +38,16 @@ pipeline {
             steps {
                 echo 'Starting application...'
                 sh 'npm start &'
-                // Add a short delay to ensure the app is up before test
                 sleep 5
                 echo 'Application started'
             }
         }
-        stage('Install Dependencies') {
+
+        stage('Install psmisc') { // Rename to avoid conflict
             steps {
-            echo 'Installing psmisc (for fuser command)...'
-            sh 'sudo apt-get install -y psmisc'
-           }
+                echo 'Installing psmisc (for fuser command)...'
+                sh 'sudo apt-get install -y psmisc'
+            }
         }
 
         stage('Run Tests') {
@@ -80,11 +80,10 @@ pipeline {
                 def renderUrl = "${env.RENDER_URL}"
                 def slackMessage = "Deployment is successful! The build ID is: ${buildId}. App URL: ${renderUrl}"
 
-                // Send Slack notification
                 slackSend (color: '#36a64f', message: slackMessage)
                 mail to: 'gacheruian99@gmail.com',
                      subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                     body: "Pipeline Succeeded ... ."
+                     body: "Pipeline Succeeded."
             }
         }
         failure {
